@@ -1,7 +1,7 @@
 const graphql = require('graphql');
 const _ = require('lodash');
 
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList} = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull} = graphql;
 
 const Player = require('../models/player');
 const Team = require('../models/team');
@@ -101,10 +101,10 @@ const Mutation = new GraphQLObjectType({
         addPlayer: {
             type: PlayerType,
             args: {
-                fName: {type: GraphQLString},
-                lName: {type: GraphQLString},
-                teamId: {type: GraphQLID},
-                number: {type: GraphQLInt}
+                fName: {type: new GraphQLNonNull(GraphQLString)},
+                lName: {type: new GraphQLNonNull(GraphQLString)},
+                teamId: {type: new GraphQLNonNull(GraphQLID)},
+                number: {type: new GraphQLNonNull(GraphQLInt)}
             },
             resolve(parent,args){
                 let player = new Player({
@@ -119,8 +119,8 @@ const Mutation = new GraphQLObjectType({
         addTeam: {
             type: TeamType,
             args: {
-                city: {type: GraphQLString},
-                name: {type: GraphQLString}
+                city: {type: new GraphQLNonNull(GraphQLString)},
+                name: {type: new GraphQLNonNull(GraphQLString)}
             },
             resolve(parent,args){
                 let team = new Team({
