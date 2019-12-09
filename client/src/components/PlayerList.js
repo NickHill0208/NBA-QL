@@ -1,18 +1,8 @@
 import React, {Component} from 'react';
-import { gql } from 'apollo-boost';
-import { graphql } from 'react-apollo';
+import {graphql} from 'react-apollo';
+import {getPlayersQuery} from '../queries/queries';
 
-const getPlayersQuery = gql`
-    {
-        players{
-            id
-            fName
-            lName
-            number
-            teamId
-        }
-    }
-`
+
 
 class PlayerList extends Component {
     displayPlayers(){
@@ -21,7 +11,8 @@ class PlayerList extends Component {
             return <div>Loading Players...</div>
         }
         else{
-            return data.players.map(player => {
+            var players = data.players.sort((a,b) => (a.fName + a.lName > b.fName + b.lName) ? 1 : -1)
+            return players.map(player => {
                 return <li key={player.id}>{player.fName} {player.lName}</li>
             })
         }
