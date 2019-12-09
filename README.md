@@ -1,5 +1,5 @@
 # GraphQL-Demo
-A demo for using GraphQL APIs
+## A demo for using GraphQL APIs
 To run the backend: 
 ```
   cd server
