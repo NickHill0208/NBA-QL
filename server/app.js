@@ -2,13 +2,19 @@ const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const schema = require('./schema/schema');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const app = express();
+
+//allow cross-origin requests
+app.use(cors());
 
 var login = 'mongodb://Test:1234567890123456@SG-Test-28803.servers.mongodirector.com:27017/Test';
 //user:Test
 //pw: 1234567890123456
 
+
+//connect to MongoDB
 mongoose.connect(login);
 mongoose.connection.once('open', () =>{
     console.log('Connected to database');
