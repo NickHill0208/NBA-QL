@@ -10,19 +10,30 @@ const getPlayersQuery = gql`
             teamId
         }
     }
-`
+`;
 
 const getPlayerQuery = gql`
-    query($id:ID!){
+    query GetPlayer($id:ID){
         player(id:$id){
             id
             fName
             lName
             number
             teamId
+            team{
+                id
+                city
+                name
+                players{
+                    id
+                    fName
+                    lName
+                    number
+                }
+            }
         }
     }
-`
+`;
 
 
 const getTeamsQuery = gql`
@@ -33,7 +44,7 @@ const getTeamsQuery = gql`
             name
         }
     }
-`
+`;
 
 const addPlayerMutation = gql`
     mutation($fName: String!, $lName: String!, $number:Int!, $teamId:ID!){
@@ -43,6 +54,6 @@ const addPlayerMutation = gql`
             id
         }
     }
-`
+`;
 
-export {getPlayersQuery,getTeamsQuery,addPlayerMutation};
+export {getPlayersQuery,getTeamsQuery,addPlayerMutation, getPlayerQuery};
