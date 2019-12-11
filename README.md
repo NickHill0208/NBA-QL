@@ -1,5 +1,5 @@
-# GraphQL-Demo
-## A demo for using GraphQL APIs
+# NBA-QL
+## A GraphQL API server/client that uses NBA players and Teams
 To run the backend: 
 ```
   cd server
