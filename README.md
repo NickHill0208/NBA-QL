@@ -3,10 +3,10 @@
 To run the backend: 
 ```
   cd server
-  npm start
+  node app
 ```
 To run the frontend:
 ```
   cd client
-  node app
+  npm start
 ```
