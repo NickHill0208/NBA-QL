@@ -26,7 +26,7 @@ var teamsData = [
 const PlayerType = new GraphQLObjectType({
     name:'Player',
     fields:() => ({
-        id: {type:GraphQLID},
+        id: {type: GraphQLID},
         fName: {type: GraphQLString},
         lName: {type: GraphQLString},
         teamId: {type: GraphQLID},
@@ -44,7 +44,7 @@ const PlayerType = new GraphQLObjectType({
 const TeamType = new GraphQLObjectType({
     name:'Team',
     fields:() => ({
-        id: {type:GraphQLID},
+        id: {type: GraphQLID},
         city: {type: GraphQLString},
         name: {type: GraphQLString},
         players: {
@@ -52,6 +52,42 @@ const TeamType = new GraphQLObjectType({
             resolve(parent, args){
                 //return _.filter(playersData, {teamId: parent.id})
                 return Player.find({teamId:parent.id});
+            }
+        }
+    })
+});
+
+const GameType = new GraphQLObjectType({
+    name:'Game',
+    fields:() => ({
+        id: {type:GraphQLID},
+        homeTeamId: {type: GraphQLID},
+        awayTeamId: {type: GraphQLID},
+        homeTeam: {
+            type: TeamType,
+            resolve(parent, args){
+                return Team.findById(parent.homeTeamId);
+            }
+        },
+        awayTeam: {
+            type: TeamType,
+            resolve(parent, args){
+                return Team.findById(parent.awayTeamId);
+            }
+        }
+    })
+});
+
+const StatlineType = new GraphQLObjectType({
+    name:'Statline',
+    fields:() => ({
+        id: {type:GraphQLID},
+        gameId: {type: GraphQLID},
+        playerId: {type: GraphQLID},
+        player: {
+            type: PlayerType,
+            resolve(parent, args){
+                return Player.findById(parent.playerId);
             }
         }
     })
