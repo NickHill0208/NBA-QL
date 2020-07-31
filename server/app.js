@@ -9,16 +9,15 @@ const app = express();
 //allow cross-origin requests
 app.use(cors());
 
-var login = 'mongodb://Test:1234567890123456@SG-Test-28803.servers.mongodirector.com:27017/Test';
 //user:Test
 //pw: 1234567890123456
+// var login = 'mongodb://Test:1234567890123456@SG-Test-28803.servers.mongodirector.com:27017/Test';
 
 
-//connect to MongoDB
-mongoose.connect(login);
-mongoose.connection.once('open', () =>{
-    console.log('Connected to database');
-});
+// mongoose.connect(login);//connect to MongoDB
+// mongoose.connection.once('open', () =>{
+//     console.log('Connected to database');
+// });
 
 app.use('/graphql',graphqlHTTP({
     schema,

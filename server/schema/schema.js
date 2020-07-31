@@ -1,13 +1,12 @@
 const graphql = require('graphql');
 const _ = require('lodash');
 
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLList, GraphQLNonNull} = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, GraphQLFloat, GraphQLList, GraphQLNonNull} = graphql;
 
 const Player = require('../models/player');
 const Team = require('../models/team');
 
 
-/*
 var playersData = [
     {id: '1', fName: 'James', lName: 'Harden', teamId: '1', number: 13},
     {id: '2', fName: 'Kawhi', lName: 'Leonard', teamId: '2', number: 2},
@@ -21,7 +20,6 @@ var teamsData = [
     {id:'2', city:'Los Angeles', name: 'Clippers'},
     {id:'3', city:'Miami', name: 'Heat'}
 ];
-*/
 
 const PlayerType = new GraphQLObjectType({
     name:'Player',
@@ -34,8 +32,8 @@ const PlayerType = new GraphQLObjectType({
         team: { 
             type: TeamType,
             resolve(parent, args){
-                //return _.find(teamsData,{id: parent.teamId})
-                return Team.findById(parent.teamId);
+                return _.find(teamsData,{id: parent.teamId})
+                //return Team.findById(parent.teamId);
             }
         }
     })
@@ -50,8 +48,8 @@ const TeamType = new GraphQLObjectType({
         players: {
             type: new GraphQLList(PlayerType),
             resolve(parent, args){
-                //return _.filter(playersData, {teamId: parent.id})
-                return Player.find({teamId:parent.id});
+                return _.filter(playersData, {teamId: parent.id})
+                //return Player.find({teamId:parent.id});
             }
         }
     })
@@ -60,7 +58,8 @@ const TeamType = new GraphQLObjectType({
 const GameType = new GraphQLObjectType({
     name:'Game',
     fields:() => ({
-        id: {type:GraphQLID},
+        id: {type: GraphQLID},
+        date: {type: GraphQLString}, 
         homeTeamId: {type: GraphQLID},
         awayTeamId: {type: GraphQLID},
         homeTeam: {
@@ -81,9 +80,18 @@ const GameType = new GraphQLObjectType({
 const StatlineType = new GraphQLObjectType({
     name:'Statline',
     fields:() => ({
-        id: {type:GraphQLID},
+        id: {type: raphQLID},
         gameId: {type: GraphQLID},
         playerId: {type: GraphQLID},
+        minutes: {type: GraphQLFloat},
+        points: {type: GraphQLInt},
+        rebounds: {type: GraphQLInt},
+        assists: {type: GraphQLInt},
+        blocks: {type: GraphQLInt},
+        steals: {type: GraphQLInt},
+        turnovers: {type: GraphQLInt},
+        fouls: {type: GraphQLInt},
+        blocks: {type: GraphQLInt},
         player: {
             type: PlayerType,
             resolve(parent, args){
@@ -101,8 +109,8 @@ const RootQuery = new GraphQLObjectType({
             args: {id: {type:GraphQLID}},
             resolve(parent, args){
                 //code to get data from db
-                //return _.find(playersData,{id:args.id});
-                return Player.findById(args.id);
+                return _.find(playersData,{id:args.id});
+                //return Player.findById(args.id);
             }
         },
         team: {
@@ -110,22 +118,22 @@ const RootQuery = new GraphQLObjectType({
             args: {id: {type:GraphQLID}},
             resolve(parent, args){
                 //code to get data from db
-                //return _.find(teamsData,{id:args.id});
-                return Team.findById(args.id)
+                return _.find(teamsData,{id:args.id});
+                //return Team.findById(args.id)
             }
         },
         players: {
             type: new GraphQLList(PlayerType),
             resolve(parent,args){
-                //return playersData;
-                return Player.find({});
+                return playersData;
+                //return Player.find({});
             }
         },
         teams: {
             type: new GraphQLList(TeamType),
             resolve(parent,args){
-                //return teamsData;
-                return Team.find({});
+                return teamsData;
+                //return Team.find({});
             }
         }
     }
