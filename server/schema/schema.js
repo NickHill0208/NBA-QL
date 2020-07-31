@@ -108,7 +108,6 @@ const RootQuery = new GraphQLObjectType({
             type: PlayerType,
             args: {id: {type:GraphQLID}},
             resolve(parent, args){
-                //code to get data from db
                 return _.find(playersData,{id:args.id});
                 //return Player.findById(args.id);
             }
@@ -117,7 +116,6 @@ const RootQuery = new GraphQLObjectType({
             type: TeamType,
             args: {id: {type:GraphQLID}},
             resolve(parent, args){
-                //code to get data from db
                 return _.find(teamsData,{id:args.id});
                 //return Team.findById(args.id)
             }
