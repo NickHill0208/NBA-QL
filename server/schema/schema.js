@@ -8,11 +8,11 @@ const Team = require('../models/team');
 
 
 var playersData = [
-    {id: '1', fName: 'James', lName: 'Harden', teamId: '1', number: 13},
-    {id: '2', fName: 'Kawhi', lName: 'Leonard', teamId: '2', number: 2},
-    {id: '3', fName: 'Jimmy', lName: 'Butler', teamId: '3', number: 22},
-    {id: '4', fName: 'Russell', lName: 'Westbrook', teamId:'1', number: 0},
-    {id: '5', fName: 'Paul', lName: 'George', teamId: '2', number: 13},
+    {id: '1', fName: 'James', lName: 'Harden', teamId: '1', number: 13, position: "SG"},
+    {id: '2', fName: 'Kawhi', lName: 'Leonard', teamId: '2', number: 2, position: "SF"},
+    {id: '3', fName: 'Jimmy', lName: 'Butler', teamId: '3', number: 22, position: "SF"},
+    {id: '4', fName: 'Russell', lName: 'Westbrook', teamId:'1', number: 0, position: "PG"},
+    {id: '5', fName: 'Paul', lName: 'George', teamId: '2', number: 13, position: "SF"},
 ];
 
 var teamsData = [
@@ -29,6 +29,7 @@ const PlayerType = new GraphQLObjectType({
         lName: {type: GraphQLString},
         teamId: {type: GraphQLID},
         number: {type: GraphQLInt},
+        position: {type: GraphQLString},
         team: { 
             type: TeamType,
             resolve(parent, args){
@@ -146,16 +147,20 @@ const Mutation = new GraphQLObjectType({
                 fName: {type: new GraphQLNonNull(GraphQLString)},
                 lName: {type: new GraphQLNonNull(GraphQLString)},
                 teamId: {type: new GraphQLNonNull(GraphQLID)},
-                number: {type: new GraphQLNonNull(GraphQLInt)}
+                number: {type: new GraphQLNonNull(GraphQLInt)},
+                position: {type: new GraphQLNonNull(GraphQLString)}
             },
             resolve(parent,args){
                 let player = new Player({
                     fName: args.fName,
                     lName: args.lName,
                     teamId: args.teamId,
-                    number: args.number
+                    number: args.number,
+                    position: args.position
                 });
-                return player.save();
+                playersData.push(player);
+                return player;
+                //return player.save();
             }
         },
         addTeam: {
@@ -169,7 +174,52 @@ const Mutation = new GraphQLObjectType({
                     city: args.city,
                     name: args.name
                 });
-                return team.save();
+                teamsData.push(team);
+                return team;
+                //return team.save();
+            }
+        },
+        removePlayer: {
+            type: GraphQLString,
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLID)}
+            },
+            resolve(parent, args){
+                playersData = playersData.filter(function(player) {
+                    if(player.id === args.id) return false;
+                    return true;
+                });
+                return "Success";
+            }
+        },
+        editPlayer: {
+            type: PlayerType,
+            args: {
+                id: {type: new GraphQLNonNull(GraphQLID)},
+                fName: {type: GraphQLString},
+                lName: {type: GraphQLString},
+                teamId: {type: GraphQLID},
+                number: {type: GraphQLInt},
+                position: {type: GraphQLString},
+            },
+            resolve(parent, args){
+                playersData.forEach(element => {
+                    if(element.id == args.id){
+                        if(args.fName != undefined) element.fName = args.fName;
+                        if(args.lName != undefined) element.lName = args.lName;
+                        if(args.teamId != undefined) element.teamId = args.teamId;
+                        if(args.number != undefined) element.number = args.number;
+                        if(args.position != undefined) element.position = args.position;
+                        let player = new Player({
+                            fName: element.fName,
+                            lName: element.lName,
+                            teamId: element.teamId,
+                            number: element.number,
+                            position: element.position
+                        });
+                        return player;
+                    }
+                });
             }
         }
     }
