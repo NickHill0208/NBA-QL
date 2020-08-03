@@ -189,6 +189,20 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent, args){
                 return gamesData;
             }
+        },
+        statline: {
+            type: StatlineType,
+            args: {id: {type: GraphQLID}},
+            resolve(parent, args){
+                return _.find(statlinesData, {id: args.id});
+            }
+        },
+        statlines: {
+            type: StatlineType,
+            args: {playerId: {type: GraphQLID}},
+            resolve(parent, args){
+                return _.filter(statlinesData, {playerId: args.playerId});
+            }
         }
     }
 });
