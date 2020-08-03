@@ -21,6 +21,15 @@ var teamsData = [
     {id:'3', city:'Miami', name: 'Heat'}
 ];
 
+var gamesData = [
+    {id:'1', date:'2020-08-03', homeTeamId: '1', awayTeamId: '2'},
+    {id:'2', date:'2020-08-03', homeTeamId: '3', awayTeamId: '2'}
+];
+
+var statlinesData = [
+
+];
+
 const PlayerType = new GraphQLObjectType({
     name:'Player',
     fields:() => ({
@@ -66,13 +75,37 @@ const GameType = new GraphQLObjectType({
         homeTeam: {
             type: TeamType,
             resolve(parent, args){
-                return Team.findById(parent.homeTeamId);
+                return _.find(teamsData,{id: parent.homeTeamId});
+                //return Team.findById(parent.homeTeamId);
+            }
+        },
+        homeScore: {
+            type: GraphQLInt,
+            resolve(parent, args){
+                let x = _.filter(statlinesData,{gameId: parent.id, teamId: parent.homeTeamId});
+                let score = 0;
+                x.forEach(element => {
+                    score += element.points;
+                });
+                return score;
             }
         },
         awayTeam: {
             type: TeamType,
             resolve(parent, args){
-                return Team.findById(parent.awayTeamId);
+                return _.find(teamsData,{id: parent.awayTeamId});
+                //return Team.findById(parent.awayTeamId);
+            }
+        },
+        awayScore: {
+            type: GraphQLInt,
+            resolve(parent, args){
+                let x = _.filter(statlinesData,{gameId: parent.id, teamId: parent.awayTeamId});
+                let score = 0;
+                x.forEach(element => {
+                    score += element.points;
+                });
+                return score;
             }
         }
     })
@@ -81,7 +114,8 @@ const GameType = new GraphQLObjectType({
 const StatlineType = new GraphQLObjectType({
     name:'Statline',
     fields:() => ({
-        id: {type: raphQLID},
+        id: {type: GraphQLID},
+        teamId: {type: GraphQLID},
         gameId: {type: GraphQLID},
         playerId: {type: GraphQLID},
         minutes: {type: GraphQLFloat},
@@ -95,8 +129,16 @@ const StatlineType = new GraphQLObjectType({
         blocks: {type: GraphQLInt},
         player: {
             type: PlayerType,
+            resolve(parent, args){                
+                return _.find(playersData,{id: parent.playerId});
+                //return Player.findById(parent.playerId);
+            }
+        },
+        game: {
+            type: GameType,
             resolve(parent, args){
-                return Player.findById(parent.playerId);
+                return _.find(gamesData,{id: parent.gameId});
+                //return Game.findById(parent.gameId);
             }
         }
     })
@@ -133,6 +175,19 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent,args){
                 return teamsData;
                 //return Team.find({});
+            }
+        },
+        game: {
+            type: GameType,
+            args: {id: {type: GraphQLID}},
+            resolve(parent, args){
+                return _.find(gamesData, {id: args.id});
+            }
+        },
+        games: {
+            type: new GraphQLList(GameType),
+            resolve(parent, args){
+                return gamesData;
             }
         }
     }
