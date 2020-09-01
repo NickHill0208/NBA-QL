@@ -2,8 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const teamSchema = new Schema({
-    city: String,
-    name: String
+    location: String,
+    simpleName: String,
+    teamName: String
 });
 
 module.exports = mongoose.model('Team', teamSchema);

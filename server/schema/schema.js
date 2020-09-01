@@ -5,45 +5,47 @@ const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLInt, 
 
 const Player = require('../models/player');
 const Team = require('../models/team');
+const Statline = require('../models/statline');
+const Game = require('../models/game');
 
 
-var playersData = [
-    {id: '1', fName: 'James', lName: 'Harden', teamId: '1', number: 13, position: "SG"},
-    {id: '2', fName: 'Kawhi', lName: 'Leonard', teamId: '2', number: 2, position: "SF"},
-    {id: '3', fName: 'Jimmy', lName: 'Butler', teamId: '3', number: 22, position: "SF"},
-    {id: '4', fName: 'Russell', lName: 'Westbrook', teamId:'1', number: 0, position: "PG"},
-    {id: '5', fName: 'Paul', lName: 'George', teamId: '2', number: 13, position: "SF"},
-];
+// var playersData = [
+//     {id: '1', fName: 'James', lName: 'Harden', teamId: '1', number: 13, position: "SG"},
+//     {id: '2', fName: 'Kawhi', lName: 'Leonard', teamId: '2', number: 2, position: "SF"},
+//     {id: '3', fName: 'Jimmy', lName: 'Butler', teamId: '3', number: 22, position: "SF"},
+//     {id: '4', fName: 'Russell', lName: 'Westbrook', teamId:'1', number: 0, position: "PG"},
+//     {id: '5', fName: 'Paul', lName: 'George', teamId: '2', number: 13, position: "SF"},
+// ];
 
-var teamsData = [
-    {id:'1', city:'Houston', name: 'Rockets'},
-    {id:'2', city:'Los Angeles', name: 'Clippers'},
-    {id:'3', city:'Miami', name: 'Heat'}
-];
+// var teamsData = [
+//     {id:'1', city:'Houston', name: 'Rockets'},
+//     {id:'2', city:'Los Angeles', name: 'Clippers'},
+//     {id:'3', city:'Miami', name: 'Heat'}
+// ];
 
-var gamesData = [
-    {id:'1', date:'2020-08-03', homeTeamId: '1', awayTeamId: '2'},
-    {id:'2', date:'2020-08-03', homeTeamId: '3', awayTeamId: '2'}
-];
+// var gamesData = [
+//     {id:'1', date:'2020-08-03', homeTeamId: '1', awayTeamId: '2'},
+//     {id:'2', date:'2020-08-03', homeTeamId: '3', awayTeamId: '2'}
+// ];
 
-var statlinesData = [
+// var statlinesData = [
 
-];
+// ];
 
 const PlayerType = new GraphQLObjectType({
     name:'Player',
     fields:() => ({
-        id: {type: GraphQLID},
+        _id: {type: GraphQLID},
         fName: {type: GraphQLString},
         lName: {type: GraphQLString},
-        teamId: {type: GraphQLID},
+        team_id: {type: GraphQLID},
         number: {type: GraphQLInt},
         position: {type: GraphQLString},
         team: { 
             type: TeamType,
             resolve(parent, args){
-                return _.find(teamsData,{id: parent.teamId})
-                //return Team.findById(parent.teamId);
+                // return _.find(teamsData,{_id: parent.team_id})
+                return Team.findById(parent.team_id);
             }
         }
     })
@@ -52,14 +54,13 @@ const PlayerType = new GraphQLObjectType({
 const TeamType = new GraphQLObjectType({
     name:'Team',
     fields:() => ({
-        id: {type: GraphQLID},
+        _id: {type: GraphQLID},
         city: {type: GraphQLString},
         name: {type: GraphQLString},
         players: {
             type: new GraphQLList(PlayerType),
             resolve(parent, args){
-                return _.filter(playersData, {teamId: parent.id})
-                //return Player.find({teamId:parent.id});
+                return Player.find({team_id:parent._id});
             }
         }
     })
