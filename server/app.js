@@ -10,11 +10,10 @@ const app = express();
 //allow cross-origin requests
 app.use(cors());
 
-console.log(login.login);
-// mongoose.connect(login);//connect to MongoDB
-// mongoose.connection.once('open', () =>{
-//     console.log('Connected to database');
-// });
+mongoose.connect(login.login, { useNewUrlParser: true, useUnifiedTopology: true });//connect to MongoDB
+mongoose.connection.once('open', () =>{
+    console.log('Connected to database: ' + login.login);
+});
 
 app.use('/graphql',graphqlHTTP({
     schema,

@@ -55,8 +55,8 @@ const TeamType = new GraphQLObjectType({
     name:'Team',
     fields:() => ({
         _id: {type: GraphQLID},
-        city: {type: GraphQLString},
-        name: {type: GraphQLString},
+        location: {type: GraphQLString},
+        simpleName: {type: GraphQLString},
         players: {
             type: new GraphQLList(PlayerType),
             resolve(parent, args){
@@ -174,8 +174,8 @@ const RootQuery = new GraphQLObjectType({
         teams: {
             type: new GraphQLList(TeamType),
             resolve(parent,args){
-                return teamsData;
-                //return Team.find({});
+                // return teamsData;
+                return Team.find({}).sort({location: 1});
             }
         },
         game: {
